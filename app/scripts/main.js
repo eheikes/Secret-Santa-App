@@ -48,13 +48,12 @@ db.once('value', function(snapshot) {
 
     // Prefill the event form.
     // TODO check if the form has been "dirtied" first
-    // BUG edescription not loading
-    $('form#event input[name="oname"]').val(event_data['oname']);
-    $('form#event input[name="email"]').val(event_data['email']);
-    $('form#event input[name="ename"]').val(event_data['ename']);
-    $('form#event input[name="date"]').val(event_data['date']);
-    $('form#event input[name="max-amount"]').val(event_data['max-amount']);
-    $('form#event input[name="edescription"]').val(event_data['edescription']);
+    $('form#event [name="oname"]').val(event_data['oname']);
+    $('form#event [name="email"]').val(event_data['email']);
+    $('form#event [name="ename"]').val(event_data['ename']);
+    $('form#event [name="date"]').val(event_data['date']);
+    $('form#event [name="max-amount"]').val(event_data['max-amount']);
+    $('form#event [name="edescription"]').val(event_data['edescription']);
 
     // Load the participants.
     participants = _.toArray(event_data.participants);
