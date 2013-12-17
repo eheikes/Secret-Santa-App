@@ -1,34 +1,80 @@
-// Get a reference to the root of the chat data.
-var messagesRef = new Firebase('https://itracebase.firebaseio.com/chat');
+// Get a reference to the root of the Santa data.
+var db = new Firebase('https://secret-santa.firebaseio.com/');
 
-// When the user presses enter on the message input, write the message to firebase.
-$('#fSubmit').on('click',function (e) {
-    'use strict';
-    var name = $('#nameInput').val();
-    var gift1 = $('#giftInput1').val();
-    var gift2 = $('#giftInput2').val();
-    var gift3 = $('#giftInput3').val();
-    messagesRef.push({name:name, gift1:gift1, gift2:gift2, gift3:gift3});
+var event_id = $.cookie('event_id');
+var my_event = null;
+var participants = [];
+
+// Helper func to convert form DOM fields to hash.
+var getFormFields = function(form) {
+    // console.log($(form));
+    return _.object(
+        _.map(
+            $(form).serializeArray(),
+            function(x) { return [x.name, x.value]; }
+        )
+    );
+};
+
+// Match up participants with each other.
+var matchPartipants = function() {
+    // TODO do a cycle, not pairs
+    var output_div = $('#messagesDiv');
+    var keys = _.shuffle(_.keys(participants));
+    console.log('participants shuffled', keys);
+    output_div.empty();
+    while (keys.length >= 2) {
+        var i = keys.pop();
+        var j = keys.pop();
+        $('<p>' + participants[i].name + ' <=> ' + participants[j].name + '</p>').appendTo(output_div);
+    };
+    if (keys.length > 0) {
+        // TODO
+    }
+};
+
+// No session cookie? Create it and the DB key.
+if (typeof event_id === 'undefined') {
+    my_event = db.push({oname: 'Secret Santa', participants: ''}); // dummy data
+    // my_event.push({participants: {}});
+    event_id = my_event.name();
+    $.cookie('event_id', event_id, { expires: 365 });
+}
+console.log('Event ID is ' + event_id);
+
+// Load the event from the DB.
+db.once('value', function(snapshot) {
+    my_event = db.child(event_id); // snapshot doesn't have methods
+    console.log('Loaded event from DB', my_event);
+    // TODO prefill form
+    // TODO Load the participants.
+    // console.log(db_root + event_id + '/participants');
+    //var eventRef = new Firebase(db_root + '/' + event_id + '/participants');
+    // eventRef.once('value', function(eventSnap) {
+    //     console.log('Loaded participants', eventSnap.val());
+    // });
+    var event_data = snapshot.val()[event_id];
+    console.log(event_data.participants);
 });
 
-// Add a callback that is triggered for each chat message.
-messagesRef.limit(10).on('child_added', function (snapshot) {
-    'use strict';
-    var message = snapshot.val();
-    $('<div/>').text(message.gift1 +', '+message.gift2 +', '+message.gift3).prepend($('<em/>')
-      .text(message.name+': ')).appendTo($('#messagesDiv'));
-    $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+// Handle event form.
+$('form#event').on('submit', function(e) {
+    e.preventDefault();
+    if (my_event === null) {
+        alert('Event data not loaded from Firebase!');
+        return false;
+    }
+    var data = getFormFields(this);
+    my_event.update(data);
 });
 
-/*
-import json
-
-from firebase import firebase
-from firebase import jsonutil
-
-firebase = firebase.FirebaseApplication('https://xxx.firebaseio.com', authentication=None)
-
-# print firebase.get('/users', None, {'print': 'pretty'})
-data = {'name': 'John Doe', 'text': 'Jane Doe'}
-result = firebase.post('/chat', data)
-*/
+// Handle the participant form.
+$('form#participant').on('submit', function(e) {
+    e.preventDefault();
+    var data = getFormFields(this);
+    my_event.child('participants').push(data);
+    participants.push(data);
+    console.log('Participants is now:', participants);
+    matchPartipants();
+    // TODO clear out the form
+});

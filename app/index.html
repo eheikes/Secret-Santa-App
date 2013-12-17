@@ -67,7 +67,7 @@
           <div class="section-header">
             <h2><i class="glyphicon glyphicon-star"></i> Event Details <i class="glyphicon glyphicon-star"></i> </h2>
           </div>
-          <form role="form">
+          <form id="event" role="form">
             <div class="row">
               <div class="form-group col-xs-12 col-sm-7 col-md-6">
                 <label for="ename" class="control-label">Organizer Name</label>
@@ -101,7 +101,7 @@
               <textarea class="form-control" rows="3" name="edescription"></textarea>
             </div>
             <div class="form-group">
-              <button type="submit" class="btn btn-default">Create Event</button>
+              <button id="eSubmit" type="submit" class="btn btn-default">Save Event</button>
             </div>
           </form>
         </div>
@@ -111,28 +111,30 @@
       <div class="container container-sm">
 
         <div class="well well-lg">
-          <h1>Add Participants</h1>
-          <div class="form-vertical">
-            <div class="form-group">
-              <label for="nameInput">
-                  Who are you?
-              </label>
-              <input type="text" class="form-control" id="nameInput" placeholder="Name">
+          <form id="participant" role="form">
+            <h1>Add Participants</h1>
+            <div class="form-vertical">
+              <div class="form-group">
+                <label for="nameInput">
+                    Who are you?
+                </label>
+                <input type="text" class="form-control" name="name" id="nameInput" placeholder="Name">
+              </div>
+              <div class="form-group">
+                <label for="giftInput1">
+                    List two or three gift ideas you would like <span class="text-muted">(try to keep them under $15)</span>.
+                </label>
+                <input type="text" id="giftInput1" name="gift1" class="form-control" placeholder="Gift idea one">
+              </div>
+              <div class="form-group">
+                <input type="text" id="giftInput2" name="gift2" class="form-control" placeholder="Gift idea two">
+              </div>
+              <div class="form-group">
+                <input type="text" id="giftInput3" name="gift3" class="form-control" placeholder="Gift idea three">
+              </div>
+              <button type="submit" id="fSubmit" class="btn btn-default">Submit</button>
             </div>
-            <div class="form-group">
-              <label for="giftInput1">
-                  List two or three gift ideas you would like <span class="text-muted">(try to keep them under $15)</span>.
-              </label>
-              <input type="text" id="giftInput1" class="form-control" placeholder="Gift idea one">
-            </div>
-            <div class="form-group">
-              <input type="text" id="giftInput2" class="form-control" placeholder="Gift idea two">
-            </div>
-            <div class="form-group">
-              <input type="text" id="giftInput3" class="form-control" placeholder="Gift idea three">
-            </div>
-            <button type="submit" id="fSubmit" class="btn btn-default">Submit</button>
-          </div>
+          </form>
         </div>
 
         <div class="page-header">
@@ -155,10 +157,12 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
     <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="scripts/jquery.cookie.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 </html>
