@@ -1,4 +1,3 @@
-// Get a reference to the root of the Santa data.
 var db = new Firebase('https://secret-santa.firebaseio.com/');
 
 var event_id = $.cookie('event_id');
@@ -7,7 +6,6 @@ var participants = [];
 
 // Helper func to convert form DOM fields to hash.
 var getFormFields = function(form) {
-    // console.log($(form));
     return _.object(
         _.map(
             $(form).serializeArray(),
