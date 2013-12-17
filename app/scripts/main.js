@@ -48,6 +48,7 @@ db.once('value', function(snapshot) {
 
     // Prefill the event form.
     // TODO check if the form has been "dirtied" first
+    // BUG edescription not loading
     $('form#event input[name="oname"]').val(event_data['oname']);
     $('form#event input[name="email"]').val(event_data['email']);
     $('form#event input[name="ename"]').val(event_data['ename']);
@@ -63,14 +64,32 @@ db.once('value', function(snapshot) {
 
 // Handle event form.
 $('form#event').on('submit', function(e) {
-    // TODO disable btn, show alert message when done
     e.preventDefault();
+
+    // Check that DB has been loaded.
     if (my_event === null) {
-        alert('Event data not loaded from Firebase!');
+        alert('Event data not yet loaded from database!');
         return false;
     }
+
+    // Disable the form while saving.
+    $('#eSubmit').prop('disabled', true);
+
+    // Save the event and show an alert message when done.
     var data = getFormFields(this);
-    my_event.update(data);
+    my_event.update(data, function(err) {
+        // Re-enable the event form.
+        $('#eSubmit').prop('disabled', false);
+
+        // Print a notification message.
+        var msg = $('<span class="alert"></span>').css({ marginLeft: '15px' });
+        if (err === null) {
+            msg.text('Saved!').addClass('alert-success');
+        } else {
+            msg.text('Error: Could not save event.').addClass('alert-danger');
+        }
+        msg.insertAfter('#eSubmit').fadeOut(5000);
+    });
 });
 
 // Handle the participant form.
