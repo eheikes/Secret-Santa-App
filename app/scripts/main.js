@@ -16,19 +16,19 @@ var getFormFields = function(form) {
 
 // Match up participants with each other.
 var matchPartipants = function() {
-    // TODO do a cycle, not pairs
-    var output_div = $('#messagesDiv');
+    // Shuffle the participants.
     var keys = _.shuffle(_.keys(participants));
+    var last_i = keys.length - 1;
     console.log('participants shuffled', keys);
+
+    // Print the matches.
+    // Use a simple cycle graph to match the participants.
+    var output_div = $('#messagesDiv');
     output_div.empty();
-    while (keys.length >= 2) {
-        var i = keys.pop();
-        var j = keys.pop();
-        $('<p>' + participants[i].name + ' <=> ' + participants[j].name + '</p>').appendTo(output_div);
+    for (var i = 0; i < last_i; i++) { // note: excluding last index
+        $('<p>' + participants[keys[i]].name + '\'s secret santa is ' + participants[keys[i+1]].name + '</p>').appendTo(output_div);
     }
-    if (keys.length > 0) {
-        // TODO
-    }
+    $('<p>' + participants[keys[last_i]].name + '\'s secret santa is ' + participants[keys[0]].name + '</p>').appendTo(output_div);
 };
 
 // No session cookie? Create it and the DB key.
