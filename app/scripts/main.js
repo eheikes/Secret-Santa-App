@@ -44,19 +44,28 @@ console.log('Event ID is ' + event_id);
 
 // Load the event from the DB.
 db.once('value', function(snapshot) {
+    var event_data = snapshot.val()[event_id];
     my_event = db.child(event_id); // snapshot doesn't have methods
-    console.log('Loaded event from DB', my_event);
-    // TODO prefill form
+    console.log('Loaded event from DB', event_data);
+
+    // Prefill the event form.
+    // TODO check if the form has been "dirtied" first
+    $('form#event input[name="oname"]').val(event_data['oname']);
+    $('form#event input[name="email"]').val(event_data['email']);
+    $('form#event input[name="ename"]').val(event_data['ename']);
+    $('form#event input[name="date"]').val(event_data['date']);
+    $('form#event input[name="max-amount"]').val(event_data['max-amount']);
+    $('form#event input[name="edescription"]').val(event_data['edescription']);
 
     // Load the participants.
-    var event_participants = snapshot.val()[event_id].participants;
-    participants = _.toArray(event_participants);
+    participants = _.toArray(event_data.participants);
     console.log('Loaded participants', participants);
     matchPartipants();
 });
 
 // Handle event form.
 $('form#event').on('submit', function(e) {
+    // TODO disable btn, show alert message when done
     e.preventDefault();
     if (my_event === null) {
         alert('Event data not loaded from Firebase!');
