@@ -27,7 +27,7 @@ var matchPartipants = function() {
         var i = keys.pop();
         var j = keys.pop();
         $('<p>' + participants[i].name + ' <=> ' + participants[j].name + '</p>').appendTo(output_div);
-    };
+    }
     if (keys.length > 0) {
         // TODO
     }
