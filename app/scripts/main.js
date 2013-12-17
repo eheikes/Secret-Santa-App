@@ -47,14 +47,12 @@ db.once('value', function(snapshot) {
     my_event = db.child(event_id); // snapshot doesn't have methods
     console.log('Loaded event from DB', my_event);
     // TODO prefill form
-    // TODO Load the participants.
-    // console.log(db_root + event_id + '/participants');
-    //var eventRef = new Firebase(db_root + '/' + event_id + '/participants');
-    // eventRef.once('value', function(eventSnap) {
-    //     console.log('Loaded participants', eventSnap.val());
-    // });
-    var event_data = snapshot.val()[event_id];
-    console.log(event_data.participants);
+
+    // Load the participants.
+    var event_participants = snapshot.val()[event_id].participants;
+    participants = _.toArray(event_participants);
+    console.log('Loaded participants', participants);
+    matchPartipants();
 });
 
 // Handle event form.
