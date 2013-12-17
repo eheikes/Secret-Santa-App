@@ -79,9 +79,17 @@ $('form#event').on('submit', function(e) {
 $('form#participant').on('submit', function(e) {
     e.preventDefault();
     var data = getFormFields(this);
+
+    // Add the data to the DB and our local array.
     my_event.child('participants').push(data);
     participants.push(data);
     console.log('Participants is now:', participants);
+
+    // Clear out the form.
+    $(this).find('input').each(function() {
+        $(this).val('');
+    });
+
+    // Update the matches.
     matchPartipants();
-    // TODO clear out the form
 });
