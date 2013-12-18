@@ -27,9 +27,9 @@ var matchPartipants = function() {
     var output_div = $('#messagesDiv');
     output_div.empty();
     for (var i = 0; i < last_i; i++) { // note: excluding last index
-        $('<p>' + participants[keys[i]].name + '\'s secret santa is ' + participants[keys[i+1]].name + '</p>').appendTo(output_div);
+        $('<p>' + participants[keys[i]].name + '\'s secret santa is ' + participants[keys[i+1]].name + '.</p>').appendTo(output_div);
     }
-    $('<p>' + participants[keys[last_i]].name + '\'s secret santa is ' + participants[keys[0]].name + '</p>').appendTo(output_div);
+    $('<p>' + participants[keys[last_i]].name + '\'s secret santa is ' + participants[keys[0]].name + '.</p>').appendTo(output_div);
 };
 
 // No session cookie? Create it and the DB key.
