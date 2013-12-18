@@ -3,6 +3,7 @@ var db = new Firebase('https://secret-santa.firebaseio.com/');
 var event_id = $.cookie('event_id');
 var my_event = null;
 var participants = [];
+var event_form_is_dirty = false;
 
 // Helper func to convert form DOM fields to hash.
 var getFormFields = function(form) {
@@ -47,18 +48,24 @@ db.once('value', function(snapshot) {
     console.log('Loaded event from DB', event_data);
 
     // Prefill the event form.
-    // TODO check if the form has been "dirtied" first
-    $('form#event [name="oname"]').val(event_data['oname']);
-    $('form#event [name="email"]').val(event_data['email']);
-    $('form#event [name="ename"]').val(event_data['ename']);
-    $('form#event [name="date"]').val(event_data['date']);
-    $('form#event [name="max-amount"]').val(event_data['max-amount']);
-    $('form#event [name="edescription"]').val(event_data['edescription']);
+    if (!event_form_is_dirty) {
+        $('form#event [name="oname"]').val(event_data['oname']);
+        $('form#event [name="email"]').val(event_data['email']);
+        $('form#event [name="ename"]').val(event_data['ename']);
+        $('form#event [name="date"]').val(event_data['date']);
+        $('form#event [name="max-amount"]').val(event_data['max-amount']);
+        $('form#event [name="edescription"]').val(event_data['edescription']);
+    }
 
     // Load the participants.
     participants = _.toArray(event_data.participants);
     console.log('Loaded participants', participants);
     matchPartipants();
+});
+
+// Mark the event form as "dirty" if a field changes.
+$('form#event').find('input,textarea').on('change', function() {
+    event_form_is_dirty = true;
 });
 
 // Handle event form.
@@ -73,6 +80,9 @@ $('form#event').on('submit', function(e) {
 
     // Disable the form while saving.
     $('#eSubmit').prop('disabled', true);
+
+    // Remove "dirty" flag.
+    event_form_is_dirty = false;
 
     // Save the event and show an alert message when done.
     var data = getFormFields(this);
